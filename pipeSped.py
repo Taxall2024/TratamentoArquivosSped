@@ -9,6 +9,12 @@ sped2 = r'C:\Users\lauro.loyola\Desktop\Data Lake\SPEDECF-79283065000141-2020010
 sped3 = r'C:\Users\lauro.loyola\Desktop\Data Lake\SPEDECF-79283065000141-20210101-20211231-20231016174350.txt'
 sped4 = r'C:\Users\lauro.loyola\Desktop\Data Lake\SPEDECF-79283065000141-20220101-20221231-20231114173914.txt'
 sped5 = r'C:\Users\lauro.loyola\Desktop\Data Lake\SPEDECF-79283065000141-20230101-20231231-20240417183332.txt'
+
+# sped1 = r'C:\Users\lauro.loyola\Desktop\Data Lake\servicos\SPEDECF-10332516000197-20190101-20191231-20200930100831.txt'
+# sped2 = r'C:\Users\lauro.loyola\Desktop\Data Lake\servicos\SPEDECF-10332516000197-20200101-20201231-20210917133744.txt'
+# sped3 = r'C:\Users\lauro.loyola\Desktop\Data Lake\servicos\SPEDECF-10332516000197-20210101-20211231-20220811104021.txt'
+# sped4 = r'C:\Users\lauro.loyola\Desktop\Data Lake\servicos\SPEDECF-10332516000197-20220101-20221231-20230728132359.txt'
+# sped5 = r'C:\Users\lauro.loyola\Desktop\Data Lake\servicos\SPEDECF-10332516000197-20230101-20231231-20240510163516.txt'
 listaDeArquivos= [sped1,sped2,sped3,sped4,sped5]
 
 listaL100 = []
@@ -45,7 +51,6 @@ def lendoELimpandoDadosSped(filePath):
     
     return df
 peridoApuracao = [
-    'A00 – Receita Bruta/Balanço de Suspensão e Redução Anual',
     'A01 – Balanço de Suspensão e Redução até Janeiro',
     'A02 – Balanço de Suspensão e Redução até Fevereiro',
     'A03 – Balanço de Suspensão e Redução até Março',
@@ -57,9 +62,12 @@ peridoApuracao = [
     'A09 – Balanço de Suspensão e Redução até Setembro',
     'A10 – Balanço de Suspensão e Redução até Outubro',
     'A11 – Balanço de Suspensão e Redução até Novembro',
-    'A12 – Balanço de Suspensão e Redução até Dezembro']
+    'A12 – Balanço de Suspensão e Redução até Dezembro',
+    'A00 – Receita Bruta/Balanço de Suspensão e Redução Anual']
 
 
+arquivoTeste = lendoELimpandoDadosSped(sped1)
+#arquivoTeste.to_excel('L100EncontrarPadraoDeA00.xlsx')
 def classificaPeriodoDeApuracao(arquivo, referencia):
     bloco_iniciado = False
     data_index = 0
@@ -76,32 +84,10 @@ def classificaPeriodoDeApuracao(arquivo, referencia):
                 arquivo.loc[i:, 'Período Apuração'] = peridoApuracao[data_index]
     return arquivo
 
-# dfSped1 = lendoELimpandoDadosSped(sped1)
-
-# dfSped1L100 =  dfSped1[dfSped1[0]=='L100'].reset_index(drop='index')
-# dfSped1L100 = classificaPeriodoDeApuracao(dfSped1L100,'ATIVO')
-
-# dfSped1L300 =  dfSped1[dfSped1[0]=='L300'].reset_index(drop='index')
-# dfSped1L300 = classificaPeriodoDeApuracao(dfSped1L300,'RESULTADO LÍQUIDO DO PERÍODO')
-
-# dfSped1M300 =  dfSped1[dfSped1[0]=='M300'].reset_index(drop='index')
-# dfSped1M300 = classificaPeriodoDeApuracao(dfSped1M300,'ATIVIDADE GERAL')
-
-# dfSped1M350 =  dfSped1[dfSped1[0]=='M350'].reset_index(drop='index')
-# dfSped1M350 = classificaPeriodoDeApuracao(dfSped1M350,'ATIVIDADE GERAL')
-
-# dfSped1N630 =  dfSped1[dfSped1[0]=='N630'].reset_index(drop='index')
-# dfSped1N630['Período Apuração'] = 'A00 – Receita Bruta/Balanço de Suspensão e Redução Anual'
-
-# dfSped1N670 =  dfSped1[dfSped1[0]=='N670'].reset_index(drop='index')
-# dfSped1N670['Período Apuração'] = 'A00 – Receita Bruta/Balanço de Suspensão e Redução Anual'
-
-
-
 def gerandoArquivosECF(caminho):
     dfSped1 = lendoELimpandoDadosSped(caminho)
 
-    dfSped1L100 =  dfSped1[dfSped1[0]=='L100'].reset_index(drop='index')
+    dfSped1L100 =  dfSped1[(dfSped1[0]=='L100')|(dfSped1[0]=='N030')].reset_index(drop='index')
     dfSped1L100 = classificaPeriodoDeApuracao(dfSped1L100,'ATIVO')
 
     dfSped1L300 =  dfSped1[dfSped1[0]=='L300'].reset_index(drop='index')
@@ -130,12 +116,60 @@ for i in listaDeArquivos:
     listaN630.append(dfSped1N630)
     listaN670.append(dfSped1N670)
 
-L100Final = pd.concat(listaL100).reset_index(drop='index')
-L300Final = pd.concat(listaL300).reset_index(drop='index')
-M300Final = pd.concat(listaM300).reset_index(drop='index')
-M350Final = pd.concat(listaM350).reset_index(drop='index')
-N630Final = pd.concat(listaN630).reset_index(drop='index')
-N670Final = pd.concat(listaN670).reset_index(drop='index')
+L100Final = pd.concat(listaL100).reset_index(drop='index').rename(columns={1:'Conta Referencial',
+                                                                           2:'Descrição Conta Referencial',
+                                                                           3:"Tipo Conta",
+                                                                           4:'Nível Conta',
+                                                                           5:'Natureza Conta',
+                                                                           6:'Conta Superior',
+                                                                           8:'D/C Saldo Final',
+                                                                           11:'Vlr Saldo Final',}).drop(columns=[7,9,10,0])
+L100Final = L100Final[['CNPJ','Data Inicial','Data Final','Ano','Período Apuração',
+                       'Conta Referencial','Conta Superior','Descrição Conta Referencial',
+                       'Natureza Conta','Tipo Conta','Nível Conta','Vlr Saldo Final','D/C Saldo Final']]
+
+L300Final = pd.concat(listaL300).reset_index(drop='index').rename(columns={1:"Conta Referencial",
+                                                                           2:'Descrição Conta Referencial',
+                                                                           3:'Tipo Conta',
+                                                                           4:"Nível Conta",
+                                                                           5:'Natureza Conta',
+                                                                           6:'Conta Superior',
+                                                                           7:'Vlr Saldo Final',
+                                                                           8:'D/C Saldo Final'})
+L300Final= L300Final[['CNPJ','Data Inicial','Data Final','Ano','Período Apuração',
+                       'Conta Referencial','Conta Superior','Descrição Conta Referencial',
+                       'Natureza Conta','Tipo Conta','Nível Conta','Vlr Saldo Final','D/C Saldo Final']]
+
+M300Final = pd.concat(listaM300).reset_index(drop='index').rename(columns={1:'Código Lançamento e-Lalur',
+                                                                           2:'Descrição Lançamento e-Lalur',
+                                                                           3:'Tipo Lançamento',
+                                                                           4:'Indicador Relação Parte A',
+                                                                           5:'Vlr Lançamento e-Lalur',
+                                                                           6:'Histórico e-Lalur'})
+M300Final = M300Final[['CNPJ','Data Inicial','Data Final','Ano','Período Apuração',
+                       'Código Lançamento e-Lalur','Descrição Lançamento e-Lalur','Tipo Lançamento',
+                       'Indicador Relação Parte A','Vlr Lançamento e-Lalur']]
+
+M350Final = pd.concat(listaM350).reset_index(drop='index').rename(columns={1:'Código Lançamento e-Lacs',
+                                                                           2:'Descrição Lançamento e-Lacs',
+                                                                           4:'Indicador Relação Parte A',
+                                                                           5:'Vlr Lançamento e-Lacs',
+                                                                           6:'Histórico e-Lacs'})
+M350Final = M350Final[['CNPJ','Data Inicial','Data Final','Ano','Período Apuração',
+                       'Código Lançamento e-Lacs','Descrição Lançamento e-Lacs',
+                       'Indicador Relação Parte A','Vlr Lançamento e-Lacs','Histórico e-Lacs']]
+
+N630Final = pd.concat(listaN630).reset_index(drop='index').rename(columns={1:'Código Lançamento',
+                                                                           2:"Descrição Lançamento",
+                                                                           3:'Vlr Lançamento'})
+N630Final = N630Final[['CNPJ','Data Inicial','Data Final','Ano','Período Apuração',
+                       'Código Lançamento','Descrição Lançamento','Vlr Lançamento']]
+
+N670Final = pd.concat(listaN670).reset_index(drop='index').rename(columns={1:'Código Lançamento',
+                                                                           2:'Descrição Lançamento',
+                                                                           3:"Vlr Lançamento"})
+N670Final = N670Final[['CNPJ','Data Inicial','Data Final','Ano','Período Apuração',
+                       'Código Lançamento','Descrição Lançamento','Vlr Lançamento']]
 
 st.dataframe(L100Final)
 st.dataframe(L300Final)
@@ -266,18 +300,5 @@ st.dataframe(N670Final)
 #     st.subheader('N670 Final')
 #     st.dataframe(n670)
 
-# # st.subheader('M300')
-# # st.dataframe(m300)
-
-# # st.subheader('M350')
-# # st.dataframe(m350)
-
-# # st.subheader('N630')
-# # st.dataframe(n630)
-
-# # st.subheader('N670')
-# # st.dataframe(n670)
-
-# st.dataframe(arquivo1)
 
 
