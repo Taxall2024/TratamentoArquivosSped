@@ -244,7 +244,7 @@ if __name__=='__main__':
     
     output_zip = io.BytesIO()
     with zipfile.ZipFile(output_zip, 'w') as zip_file:
-
+        # Add each file to the zip file
         output9 = io.BytesIO()
         with pd.ExcelWriter(output9, engine='xlsxwriter') as writer:
             L100_final.to_excel(writer, sheet_name=f'L100', index=False)
@@ -275,5 +275,6 @@ if __name__=='__main__':
             N670_final.to_excel(writer, sheet_name=f'N670', index=False)
         zip_file.writestr('N670.xlsx', output5.getvalue())
 
-    st.download_button(label="Download", data=output_zip.getvalue(), file_name="Arquivos ECF", mime="application/zip")
+    # Create a single download button
+    st.download_button(label="Download", data=output_zip.getvalue(), file_name="files.zip", mime="application/zip")
 
