@@ -6,7 +6,7 @@ import gc
 import io
 import xlsxwriter
 import base64
-
+import zipfile
 
 st.set_page_config(layout='wide')
 background_image ="Untitleddesign.jpg"
@@ -242,28 +242,38 @@ if __name__=='__main__':
 
     
     
-    
-    output9 = io.BytesIO()
-    with pd.ExcelWriter(output9, engine='xlsxwriter') as writer:L100_final.to_excel(writer,sheet_name=f'L100',index=False)
-    st.download_button(type='primary',label="Exportar L100",data=output9,file_name=f'L100.xlsx',key='download_buttonL100')
-    
-    output10 = io.BytesIO()
-    with pd.ExcelWriter(output10, engine='xlsxwriter') as writer:L300_final.to_excel(writer,sheet_name=f'L300',index=False)
-    st.download_button(type='primary',label="Exportar L300",data=output10,file_name=f'L300.xlsx',key='download_buttonL300')
-    
-    output11 = io.BytesIO()
-    with pd.ExcelWriter(output11, engine='xlsxwriter') as writer:M300_final.to_excel(writer,sheet_name=f'M300',index=False)
-    st.download_button(type='primary',label="Exportar M300",data=output11,file_name=f'M300.xlsx',key='download_buttonM300')
-    
-    output7 = io.BytesIO()
-    with pd.ExcelWriter(output7, engine='xlsxwriter') as writer:M350_final.to_excel(writer,sheet_name=f'M350',index=False)
-    st.download_button(type='primary',label="Exportar M350",data=output7,file_name=f'M350.xlsx',key='download_buttonM350')
-    
-    output6 = io.BytesIO()
-    with pd.ExcelWriter(output6, engine='xlsxwriter') as writer:N630_final.to_excel(writer,sheet_name=f'N630',index=False)
-    st.download_button(type='primary',label="Exportar N630",data=output6,file_name=f'N630.xlsx',key='download_buttonN630')
-    
-    output5 = io.BytesIO()
-    with pd.ExcelWriter(output5, engine='xlsxwriter') as writer:N670_final.to_excel(writer,sheet_name=f'N670',index=False)
-    st.download_button(type='primary',label="Exportar N670",data=output5,file_name=f'N670.xlsx',key='download_button')
+    output_zip = io.BytesIO()
+    with zipfile.ZipFile(output_zip, 'w') as zip_file:
+
+        output9 = io.BytesIO()
+        with pd.ExcelWriter(output9, engine='xlsxwriter') as writer:
+            L100_final.to_excel(writer, sheet_name=f'L100', index=False)
+        zip_file.writestr('L100.xlsx', output9.getvalue())
+
+        output10 = io.BytesIO()
+        with pd.ExcelWriter(output10, engine='xlsxwriter') as writer:
+            L300_final.to_excel(writer, sheet_name=f'L300', index=False)
+        zip_file.writestr('L300.xlsx', output10.getvalue())
+
+        output11 = io.BytesIO()
+        with pd.ExcelWriter(output11, engine='xlsxwriter') as writer:
+            M300_final.to_excel(writer, sheet_name=f'M300', index=False)
+        zip_file.writestr('M300.xlsx', output11.getvalue())
+
+        output7 = io.BytesIO()
+        with pd.ExcelWriter(output7, engine='xlsxwriter') as writer:
+            M350_final.to_excel(writer, sheet_name=f'M350', index=False)
+        zip_file.writestr('M350.xlsx', output7.getvalue())
+
+        output6 = io.BytesIO()
+        with pd.ExcelWriter(output6, engine='xlsxwriter') as writer:
+            N630_final.to_excel(writer, sheet_name=f'N630', index=False)
+        zip_file.writestr('N630.xlsx', output6.getvalue())
+
+        output5 = io.BytesIO()
+        with pd.ExcelWriter(output5, engine='xlsxwriter') as writer:
+            N670_final.to_excel(writer, sheet_name=f'N670', index=False)
+        zip_file.writestr('N670.xlsx', output5.getvalue())
+
+    st.download_button(label="Download", data=output_zip.getvalue(), file_name="Arquivos ECF", mime="application/zip")
 
