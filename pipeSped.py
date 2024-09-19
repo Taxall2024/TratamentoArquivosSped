@@ -126,9 +126,9 @@ class SpedProcessor:
         L100_final = pd.concat(self.listaL100).reset_index(drop=True).rename(columns={
             1: 'Conta Referencial', 2: 'Descrição Conta Referencial', 3: "Tipo Conta", 4: 'Nível Conta',
             5: 'Natureza Conta', 6: 'Conta Superior', 8: 'D/C Saldo Final', 11: 'Vlr Saldo Final'}).drop(columns=[7, 9, 10, 0])
-        L100_final = L100_final[['CNPJ', 'Data Inicial', 'Data Final', 'Ano', 'Período Apuração','Período Apuração Trimestral',
-                                 'Conta Referencial', 'Conta Superior', 'Descrição Conta Referencial',
-                                 'Natureza Conta', 'Tipo Conta', 'Nível Conta', 'Vlr Saldo Final', 'D/C Saldo Final']]
+        #L100_final = L100_final[['CNPJ', 'Data Inicial', 'Data Final', 'Ano', 'Período Apuração','Período Apuração Trimestral',
+         #                        'Conta Referencial', 'Conta Superior', 'Descrição Conta Referencial',
+          #                       'Natureza Conta', 'Tipo Conta', 'Nível Conta', 'Vlr Saldo Final', 'D/C Saldo Final']]
 
         L300_final = pd.concat(self.listaL300).reset_index(drop=True).rename(columns={
             1: "Conta Referencial", 2: 'Descrição Conta Referencial', 3: 'Tipo Conta', 4: "Nível Conta",
